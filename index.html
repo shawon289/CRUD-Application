@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Flight-Info to Cart</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body onload="showData()">
+    <div id="container">
+        <button class="open-button" onclick= openForm()>Add Data</button>
+        <div class="form" id="form" onsubmit="return false">
+            <h2>Create Data</h2>
+            <form class="main-form">
+                <input type="text" id="flight-id" placeholder="Flight ID" style="display: none;"><br><br>
+                <input type="text" id="depart" placeholder="Depart From"><br><br>
+                <input type="text" id="destination" placeholder="Destination"><br><br>
+                <input type="text" id="date" placeholder="Date"><br><br>
+                <input type="time" id="time" placeholder="Time"><br><br>
+                <input type="text" id="price" placeholder="Price"><br><br>
+                <button type="submit" class="btn" onclick="Submit()">Submit</button>
+                <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+            </form>
+        </div>
+        <div id="field-container">
+            <div class="flight-container">
+                <fieldset class="flight-field">
+                    <h2>Available Flights</h2>
+                    <table id="flightTable">
+                        <tr>
+                            <td>Flight ID</td>
+                            <td>Depart From</td>
+                            <td>Destination</td>
+                            <td>Date</td>
+                            <td>Time</td>
+                            <td>Price</td>
+                            <td>Action</td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </div>
+            <div class="flightCart-container">
+                <fieldset class="cart-field">
+                    <h2>Ticket Cart</h2>
+                    <table id="ticketCart">
+                        <tr>
+                            <td>Flight ID
+                                <select id="select" onchange="addToCart()">
+                                    <option>Select Id</option>
+                                </select>
+                            </td>
+                            <td>Depart From</td>
+                            <td>Destination</td>
+                            <td>Date</td>
+                            <td>Time</td>
+                            <td>Price</td>
+                            <td>Number of Tickets</td>
+                        </tr>
+                    </table>
+                    <div id="show-price">
+                        <h2>Total Price: </h2>
+                        <input type="text" id="total-price" disabled>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
