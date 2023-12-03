@@ -1,6 +1,6 @@
 let itemArray = [];
 let updateItemID = 0;
-let isEditMode = false;
+let isEditMode = true;
 // let itemInCart = [];
 let row = null;
 function openForm() {
@@ -20,13 +20,13 @@ function Submit() {
 }
 
 function retrieveData() {
-    let id = document.getElementById("flight-id").value;
+    // let id = document.getElementById("flight-id").value;
     let departFrom = document.getElementById("depart").value;
     let destination = document.getElementById("destination").value;
     let date = document.getElementById("date").value;
     let time = document.getElementById("time").value;
     let price = document.getElementById("price").value;
-    let obj = { id, departFrom, destination, date, time, price };
+    let obj = { departFrom, destination, date, time, price };
     return obj;
 }
 
@@ -34,14 +34,16 @@ function readLocalStorage(dataEntered) {
     const storedData = localStorage.getItem('data') || '[]';
     const parsedData = JSON.parse(storedData)
     // parsedData.push(dataEntered);
-    let uniqueId = 1;
-    if (parsedData.length > 0) {
-        const maxId = parsedData.reduce((max, item) => (item.id > max ? item.id : max), 0);
-        uniqueId = maxId + 1;
+    if (!isEditMode) {
+        let uniqueId = 1;
+        if (parsedData.length > 0) {
+            const maxId = parsedData.reduce((max, item) => (item.id > max ? item.id : max), 0);
+            uniqueId = maxId + 1;
+        }
+        dataEntered.id = uniqueId;
+        parsedData.push(dataEntered);
+        localStorage.setItem('data', JSON.stringify(parsedData));
     }
-    dataEntered.id = uniqueId;
-    parsedData.push(dataEntered);
-    localStorage.setItem('data', JSON.stringify(parsedData));
     return parsedData;
 }
 
@@ -87,9 +89,9 @@ function editData(dlt) {
         editData.indexOf(item) === dlt)
 
     let displayItem = displayData[displayData.length - 1];
-    updateItemID = dlt;
+    // updateItemID = dlt;
 
-    // updateItemID = document.getElementById('id').value;
+    document.getElementById('flight-id').value = displayItem.id;
     document.getElementById('depart').value = displayItem.departFrom;
     document.getElementById('destination').value = displayItem.destination;
     document.getElementById('date').value = displayItem.date;
@@ -98,21 +100,16 @@ function editData(dlt) {
 }
 
 function saveData() {
-
-    console.log("Id", updateItemID)
     let updateData = localStorage.getItem('data') || '[]';
     updateData = JSON.parse(updateData);
+    const itemID = parseInt(document.getElementById("flight-id").value);
+    const sourceItem = updateData.find((item) => item.id === itemID);
 
-    // var updatedData = updateData.filter((item) =>
-    //     updateData.indexOf(item) === updateItemID);
-    const elementIndex = updateData.findIndex((item) => item.id === updateItemID);
-    console.log(elementIndex);
-
-    elementIndex.departFrom = document.getElementById("depart").value;
-    elementIndex.destination = document.getElementById("destination").value;
-    elementIndex.date = document.getElementById("date").value;
-    elementIndex.time = document.getElementById("time").value;
-    elementIndex.price = document.getElementById("price").value;
+    sourceItem.departFrom = document.getElementById("depart").value;
+    sourceItem.destination = document.getElementById("destination").value;
+    sourceItem.date = document.getElementById("date").value;
+    sourceItem.time = document.getElementById("time").value;
+    sourceItem.price = document.getElementById("price").value;
 
     localStorage.setItem('data', JSON.stringify(updateData));
 }
@@ -172,9 +169,8 @@ function increase() {
 
     const selectedId = parseInt(document.getElementById('select').value);
     const selectedData = storedData.find(obj => obj.id === selectedId);
-    const cartID = selectedData.id;
 
-    let price = storedData.find((obj) => obj.id === cartID).price;
+    let price = storedData.find((obj) => obj.id === selectedData.id).price;
     let totalPrice = parseInt(price) * counter;
     document.querySelector('#total-price').value = totalPrice;
 }
@@ -193,9 +189,8 @@ function decrease() {
 
     const selectedId = parseInt(document.getElementById('select').value);
     const selectedData = storedData.find(obj => obj.id === selectedId);
-    const cartID = selectedData.id;
 
-    let price = storedData.find((obj) => obj.id === cartID).price;
+    let price = storedData.find((obj) => obj.id === selectedData.id).price;
     let totalPrice = parseInt(price) * counter;
     document.querySelector('#total-price').value = totalPrice;
 }
