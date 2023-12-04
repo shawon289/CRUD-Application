@@ -57,7 +57,7 @@ function showData() {
 function insertData(newFlightInfo, index) {
     let fields = ["id", "departFrom", "destination", "date", "time", "price", 'action'];
     let flightTable = document.getElementById('table-body');
-    row = flightTable.insertRow(); 
+    row = flightTable.insertRow();
     fields.forEach(key => {
         row.insertCell().innerHTML = (key == "action")
             ? `<button id="edit" onclick=editData(${index},openForm())>Edit</button>
@@ -111,10 +111,10 @@ function showId() {
     let selectElement = document.getElementById('select');
     let optionElement = document.createElement('option');
 
-    if(selectElement) {
+    if (selectElement) {
         selectElement.innerHTML = '';
     }
-    
+
     optionElement.textContent = "";
     selectElement.appendChild(optionElement);
     let rowID = storedData.map(itemId => itemId.id);
@@ -170,18 +170,22 @@ function increase() {
 function decrease() {
     let ticketTable = document.getElementById('ticketCart');
     let counter = document.getElementById('number').value;
-    
+    let selectElement = document.getElementById('select');
+
     counter = isNaN(counter) ? 0 : counter;
     counter--
     document.getElementById('number').value = counter;
-    
+
     let selectedId = parseInt(document.getElementById('select').value);
     let selectedData = storedData.find(obj => obj.id === selectedId);
-    
+
     let price = storedData.find((obj) => obj.id === selectedData.id).price;
     let totalPrice = parseInt(price) * counter;
     if (counter <= 0) {
         ticketTable.deleteRow(1);
+        selectElement.selectedIndex = 0;
+        document.querySelector('#total-price').value = '';
+    } else {
+        document.querySelector('#total-price').value = totalPrice;
     }
-    document.querySelector('#total-price').value = totalPrice;
 }
