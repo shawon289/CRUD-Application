@@ -62,7 +62,7 @@ function showData() {
     // addToCart();
 }
 
-function insertData(newFlightInfo, dlt) {
+function insertData(newFlightInfo, dlt, editedItemID) {
     let fields = ["id", "departFrom", "destination", "date", "time", "price"];
     let flightTable = document.getElementById('table-body');
     row = flightTable.insertRow();
@@ -71,7 +71,7 @@ function insertData(newFlightInfo, dlt) {
             ? newFlightInfo[key]
             : newFlightInfo[key];
     })
-    const cell = `<button id="edit" onclick=editData(${dlt},openForm())>Edit</button>
+    const cell = `<button id="edit" onclick=editData(${editedItemID},openForm())>Edit</button>
     <button id="remove" onclick=removeData(${dlt})>Delete</button>`;
     row.insertCell().innerHTML = cell;
     showId();
@@ -89,13 +89,13 @@ function removeData(dlt) {
     showData();
 }
 
-function editData(dlt) {
+function editData(editedItemID) {
     isEditMode = true;
     let editData = localStorage.getItem('data') || '[]';
     editData = JSON.parse(editData);
 
     var displayData = editData.filter((item) =>
-        editData.indexOf(item) === dlt)
+        editData.indexOf(item) === editedItemID)
 
     let displayItem = displayData[displayData.length - 1];
     // updateItemID = dlt;
