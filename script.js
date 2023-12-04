@@ -1,8 +1,8 @@
 let itemArray = [];
-let updateItemID = 0;
-let isEditMode = true;
-// let itemInCart = [];
+let isEditMode = false;
 let row = null;
+let storedData = localStorage.getItem("data") || "[]";
+storedData = JSON.parse(storedData);
 
 function openForm() {
     isEditMode = false;
@@ -15,13 +15,12 @@ function closeForm() {
 function Submit() {
     let dataEntered = retrieveData();
     itemArray = readLocalStorage(dataEntered);
-    const index = itemArray.length - 1;
+    let index = itemArray.length - 1;
     isEditMode ? saveData() : insertData(dataEntered, index);
 
 }
 
 function retrieveData() {
-    // let id = document.getElementById("flight-id").value;
     let departFrom = document.getElementById("depart").value;
     let destination = document.getElementById("destination").value;
     let date = document.getElementById("date").value;
@@ -32,58 +31,47 @@ function retrieveData() {
 }
 
 function readLocalStorage(dataEntered) {
-    const storedData = localStorage.getItem('data') || '[]';
-    const parsedData = JSON.parse(storedData)
-    // parsedData.push(dataEntered);
     if (!isEditMode) {
         let uniqueId = 1;
-        if (parsedData.length > 0) {
-            const maxId = parsedData.reduce((max, item) => (item.id > max ? item.id : max), 0);
+        if (storedData.length > 0) {
+            let maxId = storedData.reduce((max, item) => (item.id > max ? item.id : max), 0);
             uniqueId = maxId + 1;
         }
         dataEntered.id = uniqueId;
-        parsedData.push(dataEntered);
-        localStorage.setItem('data', JSON.stringify(parsedData));
+        storedData.push(dataEntered);
+        localStorage.setItem('data', JSON.stringify(storedData));
     }
-    return parsedData;
+    return storedData;
 }
 
 function showData() {
-    const storedData = localStorage.getItem("data") || "[]";
-    const itemArray = JSON.parse(storedData);
-    const tableBody = document.getElementById('table-body');
+    let tableBody = document.getElementById('table-body');
 
     if (tableBody) {
         tableBody.innerHTML = '';
     }
-    itemArray.forEach((flightInfo, deletedItemID, editedItemID) => insertData(flightInfo, deletedItemID, editedItemID));
+    storedData.forEach((flightInfo, index) => insertData(flightInfo, index));
     showId();
-    
-    // addToCart();
 }
 
-function insertData(newFlightInfo, deletedItemID, editedItemID) {
-    let fields = ["id", "departFrom", "destination", "date", "time", "price"];
+function insertData(newFlightInfo, index) {
+    let fields = ["id", "departFrom", "destination", "date", "time", "price", 'action'];
     let flightTable = document.getElementById('table-body');
-    row = flightTable.insertRow();
+    row = flightTable.insertRow(); 
     fields.forEach(key => {
-        row.insertCell().innerHTML = (key == "date")
-            ? newFlightInfo[key]
+        row.insertCell().innerHTML = (key == "action")
+            ? `<button id="edit" onclick=editData(${index},openForm())>Edit</button>
+            <button id="remove" onclick=removeData(${index})>Delete</button>`
             : newFlightInfo[key];
     })
-    const cell = `<button id="edit" onclick=editData(${editedItemID},openForm())>Edit</button>
-    <button id="remove" onclick=removeData(${deletedItemID})>Delete</button>`;
-    row.insertCell().innerHTML = cell;
     showId();
 }
 
 function removeData(deletedItemID) {
-    let storedData = localStorage.getItem('data') || '[]';
-    storedData = JSON.parse(storedData);
     storedData.splice(deletedItemID, 1);
     localStorage.setItem('data', JSON.stringify(storedData));
-    const table = document.getElementById('flightTable');
-    for (var i = 1; i < table.rows.length;) {
+    let table = document.getElementById('flightTable');
+    for (let i = 1; i < table.rows.length;) {
         table.deleteRow(i);
     }
     showData();
@@ -91,14 +79,11 @@ function removeData(deletedItemID) {
 
 function editData(editedItemID) {
     isEditMode = true;
-    let editData = localStorage.getItem('data') || '[]';
-    editData = JSON.parse(editData);
 
-    var displayData = editData.filter((item) =>
-        editData.indexOf(item) === editedItemID)
+    let displayData = storedData.filter((item) =>
+        storedData.indexOf(item) === editedItemID)
 
     let displayItem = displayData[displayData.length - 1];
-    // updateItemID = dlt;
 
     document.getElementById('flight-id').value = displayItem.id;
     document.getElementById('depart').value = displayItem.departFrom;
@@ -109,10 +94,8 @@ function editData(editedItemID) {
 }
 
 function saveData() {
-    let updateData = localStorage.getItem('data') || '[]';
-    updateData = JSON.parse(updateData);
-    const itemID = parseInt(document.getElementById("flight-id").value);
-    const sourceItem = updateData.find((item) => item.id === itemID);
+    let itemID = parseInt(document.getElementById("flight-id").value);
+    let sourceItem = storedData.find((item) => item.id === itemID);
 
     sourceItem.departFrom = document.getElementById("depart").value;
     sourceItem.destination = document.getElementById("destination").value;
@@ -120,29 +103,23 @@ function saveData() {
     sourceItem.time = document.getElementById("time").value;
     sourceItem.price = document.getElementById("price").value;
 
-    localStorage.setItem('data', JSON.stringify(updateData));
+    localStorage.setItem('data', JSON.stringify(storedData));
     showData();
-    window.oninput=addToCart();
-    // insertData();
 }
 
 function showId() {
-    // let arrOfID = {}
-    const storedData = localStorage.getItem("data") || "[]";
-    const itemArray = JSON.parse(storedData);
-    const selectElement = document.getElementById('select');
-    const optionElement = document.createElement('option');
+    let selectElement = document.getElementById('select');
+    let optionElement = document.createElement('option');
 
     if(selectElement) {
         selectElement.innerHTML = '';
     }
     
-    optionElement.textContent = ""
-    optionElement.value = ""
-    selectElement.appendChild(optionElement)
-    let rowID = itemArray.map(itemId => itemId.id);
+    optionElement.textContent = "";
+    selectElement.appendChild(optionElement);
+    let rowID = storedData.map(itemId => itemId.id);
     rowID.forEach(list => {
-        const option = document.createElement('option');
+        let option = document.createElement('option');
         option.textContent = list;
         selectElement.appendChild(option);
     })
@@ -150,14 +127,11 @@ function showId() {
 }
 
 function addToCart() {
-    const storedData = localStorage.getItem("data") || "[]";
-    const itemArray = JSON.parse(storedData);
+    let ticketCart = document.getElementById("tableBody");
+    let selectedId = parseInt(document.getElementById('select').value);
 
-    const ticketCart = document.getElementById("tableBody");
-    const selectedId = parseInt(document.getElementById('select').value);
-
-    const selectedData = itemArray.find(obj => obj.id === selectedId);
-    const newRow = document.createElement('tr');
+    let selectedData = storedData.find(obj => obj.id === selectedId);
+    let newRow = document.createElement('tr');
 
     ticketCart.innerHTML = '';
 
@@ -176,19 +150,17 @@ function addToCart() {
         ticketCart.appendChild(newRow);
     }
 
-    localStorage.setItem('data', JSON.stringify(itemArray));
+    localStorage.setItem('data', JSON.stringify(storedData));
 }
 
 function increase() {
-    let storedData = localStorage.getItem('data') || '[]';
-    storedData = JSON.parse(storedData);
     let counter = parseInt(document.getElementById('number').value);
     counter = isNaN(counter) ? 0 : counter;
     counter++;
     document.getElementById('number').value = counter;
 
-    const selectedId = parseInt(document.getElementById('select').value);
-    const selectedData = storedData.find(obj => obj.id === selectedId);
+    let selectedId = parseInt(document.getElementById('select').value);
+    let selectedData = storedData.find(obj => obj.id === selectedId);
 
     let price = storedData.find((obj) => obj.id === selectedData.id).price;
     let totalPrice = parseInt(price) * counter;
@@ -198,22 +170,19 @@ function increase() {
 function decrease() {
     let ticketTable = document.getElementById('ticketCart');
     let totalPriceField = document.getElementById('total-price').value; 
-    let storedData = localStorage.getItem('data') || '[]';
-    storedData = JSON.parse(storedData);
     let counter = document.getElementById('number').value;
     
     counter = isNaN(counter) ? 0 : counter;
     counter--
     document.getElementById('number').value = counter;
     
-    const selectedId = parseInt(document.getElementById('select').value);
-    const selectedData = storedData.find(obj => obj.id === selectedId);
+    let selectedId = parseInt(document.getElementById('select').value);
+    let selectedData = storedData.find(obj => obj.id === selectedId);
     
     let price = storedData.find((obj) => obj.id === selectedData.id).price;
     let totalPrice = parseInt(price) * counter;
     if (counter <= 0) {
         ticketTable.deleteRow(1);
-        totalPriceField.innerHTML = '';
     }
     document.querySelector('#total-price').value = totalPrice;
 }
