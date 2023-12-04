@@ -56,13 +56,13 @@ function showData() {
     if (tableBody) {
         tableBody.innerHTML = '';
     }
-    itemArray.forEach((flightInfo, dlt) => insertData(flightInfo, dlt));
+    itemArray.forEach((flightInfo, deletedItemID, editedItemID) => insertData(flightInfo, deletedItemID, editedItemID));
     showId();
     
     // addToCart();
 }
 
-function insertData(newFlightInfo, dlt, editedItemID) {
+function insertData(newFlightInfo, deletedItemID, editedItemID) {
     let fields = ["id", "departFrom", "destination", "date", "time", "price"];
     let flightTable = document.getElementById('table-body');
     row = flightTable.insertRow();
@@ -72,15 +72,15 @@ function insertData(newFlightInfo, dlt, editedItemID) {
             : newFlightInfo[key];
     })
     const cell = `<button id="edit" onclick=editData(${editedItemID},openForm())>Edit</button>
-    <button id="remove" onclick=removeData(${dlt})>Delete</button>`;
+    <button id="remove" onclick=removeData(${deletedItemID})>Delete</button>`;
     row.insertCell().innerHTML = cell;
     showId();
 }
 
-function removeData(dlt) {
+function removeData(deletedItemID) {
     let storedData = localStorage.getItem('data') || '[]';
     storedData = JSON.parse(storedData);
-    storedData.splice(dlt, 1);
+    storedData.splice(deletedItemID, 1);
     localStorage.setItem('data', JSON.stringify(storedData));
     const table = document.getElementById('flightTable');
     for (var i = 1; i < table.rows.length;) {
