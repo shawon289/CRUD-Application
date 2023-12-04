@@ -3,6 +3,7 @@ let updateItemID = 0;
 let isEditMode = true;
 // let itemInCart = [];
 let row = null;
+
 function openForm() {
     isEditMode = false;
     document.getElementById("form").style.display = "block";
@@ -50,13 +51,20 @@ function readLocalStorage(dataEntered) {
 function showData() {
     const storedData = localStorage.getItem("data") || "[]";
     const itemArray = JSON.parse(storedData);
+    const tableBody = document.getElementById('table-body');
+
+    if (tableBody) {
+        tableBody.innerHTML = '';
+    }
     itemArray.forEach((flightInfo, dlt) => insertData(flightInfo, dlt));
     showId();
+    
     // addToCart();
 }
 
 function insertData(newFlightInfo, dlt) {
     let fields = ["id", "departFrom", "destination", "date", "time", "price"];
+    let flightTable = document.getElementById('table-body');
     row = flightTable.insertRow();
     fields.forEach(key => {
         row.insertCell().innerHTML = (key == "date")
@@ -66,6 +74,7 @@ function insertData(newFlightInfo, dlt) {
     const cell = `<button id="edit" onclick=editData(${dlt},openForm())>Edit</button>
     <button id="remove" onclick=removeData(${dlt})>Delete</button>`;
     row.insertCell().innerHTML = cell;
+    showId();
 }
 
 function removeData(dlt) {
@@ -112,6 +121,9 @@ function saveData() {
     sourceItem.price = document.getElementById("price").value;
 
     localStorage.setItem('data', JSON.stringify(updateData));
+    showData();
+    window.oninput=addToCart();
+    // insertData();
 }
 
 function showId() {
@@ -119,7 +131,15 @@ function showId() {
     const storedData = localStorage.getItem("data") || "[]";
     const itemArray = JSON.parse(storedData);
     const selectElement = document.getElementById('select');
+    const optionElement = document.createElement('option');
 
+    if(selectElement) {
+        selectElement.innerHTML = '';
+    }
+    
+    optionElement.textContent = ""
+    optionElement.value = ""
+    selectElement.appendChild(optionElement)
     let rowID = itemArray.map(itemId => itemId.id);
     rowID.forEach(list => {
         const option = document.createElement('option');
@@ -177,20 +197,23 @@ function increase() {
 
 function decrease() {
     let ticketTable = document.getElementById('ticketCart');
+    let totalPriceField = document.getElementById('total-price').value; 
     let storedData = localStorage.getItem('data') || '[]';
     storedData = JSON.parse(storedData);
     let counter = document.getElementById('number').value;
+    
     counter = isNaN(counter) ? 0 : counter;
     counter--
     document.getElementById('number').value = counter;
-    if (counter <= 0) {
-        ticketTable.deleteRow(1);
-    }
-
+    
     const selectedId = parseInt(document.getElementById('select').value);
     const selectedData = storedData.find(obj => obj.id === selectedId);
-
+    
     let price = storedData.find((obj) => obj.id === selectedData.id).price;
     let totalPrice = parseInt(price) * counter;
+    if (counter <= 0) {
+        ticketTable.deleteRow(1);
+        totalPriceField.innerHTML = '';
+    }
     document.querySelector('#total-price').value = totalPrice;
 }
