@@ -169,7 +169,6 @@ function increase() {
 
 function decrease() {
     let ticketTable = document.getElementById('ticketCart');
-    let totalPriceField = document.getElementById('total-price').value; 
     let counter = document.getElementById('number').value;
     
     counter = isNaN(counter) ? 0 : counter;
