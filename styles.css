@@ -95,7 +95,6 @@ body {
     height: 0px;
     right: 15px;
     border: 3px solid #f1f1f1;
-    /* z-index: 9; */
 }
 
 .main-form {
@@ -145,8 +144,6 @@ body {
     }
 }
 
-
-/* mobile */
 @media only screen and (max-width: 992px) {
     .form{
         height: 90%;

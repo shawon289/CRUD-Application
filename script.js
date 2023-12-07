@@ -1,4 +1,5 @@
 let itemArray = [];
+let cartItem = [];
 let isEditMode = false;
 let row = null;
 let storedData = localStorage.getItem("data") || "[]";
@@ -17,7 +18,7 @@ function Submit() {
     itemArray = readLocalStorage(dataEntered);
     let index = itemArray.length - 1;
     isEditMode ? saveData() : insertData(dataEntered, index);
-
+    closeForm()
 }
 
 function retrieveData() {
@@ -127,65 +128,90 @@ function showId() {
 }
 
 function addToCart() {
+    let selectedId = parseInt(document.getElementById('select').value);
+
+    let tableRows = document.getElementById("tableBody").getElementsByTagName("tr");
+    let valueOfIndex;
+
+    let selectedItem = storedData.find(obj => obj.id === selectedId);
+
+    let itemId = selectedItem.id;
+    let itemDepart = selectedItem.departFrom;
+    let itemDestination = selectedItem.destination;
+    let itemDate = selectedItem.date;
+    let itemTime = selectedItem.time;
+    let itemPrice = selectedItem.price;
+
+    for (let row of tableRows) {
+        let rowItems = row.getElementsByTagName("td");
+        if (rowItems[0].innerHTML == selectedId) {
+            valueOfIndex = selectedId
+        }
+    }
+
+    if (!valueOfIndex) {
+        cartItem.push({ id: itemId, departFrom: itemDepart, destination: itemDestination, date: itemDate, time: itemTime, price: itemPrice, quantity: 1 });
+    }
+
+    displayCartItem();
+}
+
+function displayCartItem() {
     let ticketCart = document.getElementById("tableBody");
-    let selectedId = parseInt(document.getElementById('select').value);
-
-    let selectedData = storedData.find(obj => obj.id === selectedId);
-    let newRow = document.createElement('tr');
-
     ticketCart.innerHTML = '';
-
-    if (selectedData) {
+    cartItem.forEach((item, index) => {
+        let newRow = document.createElement('tr');
         newRow.innerHTML = `
-        <td>${selectedData.id}</td>
-        <td>${selectedData.departFrom}</td>
-        <td>${selectedData.destination}</td>
-        <td>${selectedData.date}</td>
-        <td>${selectedData.time}</td>
-        <td>${selectedData.price}</td>
-        <td><button class='increase' onclick="increase()">+</button> 
-                         <input type="text" id="number" value = "0"> 
-                         <button class='decrease' onclick="decrease()">-</button>
-        `;
+            <td>${item.id}</td>
+            <td>${item.departFrom}</td>
+            <td>${item.destination}</td>
+            <td>${item.date}</td>
+            <td>${item.time}</td>
+            <td>${item.price}</td>
+            <td><button class='increase' onclick="increase(${index})">+</button> 
+            <input type="text" id="number" value = ${item.quantity}> 
+            <button class='decrease' onclick="decrease(${index})">-</button></td>
+            `;
         ticketCart.appendChild(newRow);
-    }
-
-    localStorage.setItem('data', JSON.stringify(storedData));
+    })
 }
 
-function increase() {
-    let counter = parseInt(document.getElementById('number').value);
-    counter = isNaN(counter) ? 0 : counter;
-    counter++;
-    document.getElementById('number').value = counter;
+function increase(index) {
+    let subTotal = 0;
+    let totalPrice = 0;
+    let item = cartItem[index];
+    item.quantity++;
+    subTotal += parseInt(item.price) * item.quantity;
+    totalPrice += totalPrice + subTotal;
+    document.getElementById('total-price').value = totalPrice;
 
-    let selectedId = parseInt(document.getElementById('select').value);
-    let selectedData = storedData.find(obj => obj.id === selectedId);
-
-    let price = storedData.find((obj) => obj.id === selectedData.id).price;
-    let totalPrice = parseInt(price) * counter;
-    document.querySelector('#total-price').value = totalPrice;
+    displayCartItem();
 }
 
-function decrease() {
-    let ticketTable = document.getElementById('ticketCart');
-    let counter = document.getElementById('number').value;
+function decrease(index) {
+    let subTotal = 0;
+    let totalPrice = 0;
     let selectElement = document.getElementById('select');
-
-    counter = isNaN(counter) ? 0 : counter;
-    counter--
-    document.getElementById('number').value = counter;
-
-    let selectedId = parseInt(document.getElementById('select').value);
-    let selectedData = storedData.find(obj => obj.id === selectedId);
-
-    let price = storedData.find((obj) => obj.id === selectedData.id).price;
-    let totalPrice = parseInt(price) * counter;
-    if (counter <= 0) {
-        ticketTable.deleteRow(1);
-        selectElement.selectedIndex = 0;
-        document.querySelector('#total-price').value = '';
-    } else {
-        document.querySelector('#total-price').value = totalPrice;
+    let ticketCart = document.getElementById("tableBody");
+    let item = cartItem[index];
+    if (item.quantity >= 0) {
+        item.quantity--;
+        if (item.quantity <= 0) {
+            cartItem.splice(index, 1);
+            if(ticketCart.innerHTML = '') {
+                selectElement.selectedIndex = 0;
+                document.querySelector('#total-price').value = '';
+            }
+        } else {
+            subTotal += parseInt(item.price) * item.quantity;
+            totalPrice += subTotal;
+            document.getElementById('total-price').value = totalPrice;
+        }
+        if(ticketCart.innerHTML = '') {
+            selectElement.selectedIndex = 0;
+            document.querySelector('#total-price').value = '';
+        }
+        displayCartItem();
     }
 }
+document.querySelector('#total-price').value = '';
