@@ -3,7 +3,7 @@ table tr td{
     font-weight: bold;
     border:inset; 
 }
-#field-container {
+.field-container {
     display: flex;
     border-radius: 5px;
 }
@@ -89,12 +89,24 @@ body {
     font-weight: bold;
 }
 
+body.form {
+    right: 0;
+}
+
+body.field-container {
+    transform: translate(-250px);
+}
+
 .form {
     display: none;
     position: fixed;
     height: 0px;
-    right: 15px;
+    top: 0;
+    right: -400px;
+    bottom: 0;
     border: 3px solid #f1f1f1;
+    transition: .5s;
+    transform: translateX(-400px);
 }
 
 .main-form {

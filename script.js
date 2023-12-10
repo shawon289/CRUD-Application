@@ -68,8 +68,8 @@ function insertData(newFlightInfo, index) {
     showId();
 }
 
-function removeData(deletedItemID) {
-    storedData.splice(deletedItemID, 1);
+function removeData(deletedItemIndex) {
+    storedData.splice(deletedItemIndex, 1);
     localStorage.setItem('data', JSON.stringify(storedData));
     let table = document.getElementById('flightTable');
     for (let i = 1; i < table.rows.length;) {
@@ -78,11 +78,11 @@ function removeData(deletedItemID) {
     showData();
 }
 
-function editData(editedItemID) {
+function editData(editedItemIndex) {
     isEditMode = true;
 
     let displayData = storedData.filter((item) =>
-        storedData.indexOf(item) === editedItemID)
+        storedData.indexOf(item) === editedItemIndex)
 
     let displayItem = displayData[displayData.length - 1];
 
@@ -145,7 +145,7 @@ function addToCart() {
     for (let row of tableRows) {
         let rowItems = row.getElementsByTagName("td");
         if (rowItems[0].innerHTML == selectedId) {
-            valueOfIndex = selectedId
+            valueOfIndex = rowItems[0].innerHTML;
         }
     }
 
@@ -159,6 +159,7 @@ function addToCart() {
 function displayCartItem() {
     let ticketCart = document.getElementById("tableBody");
     ticketCart.innerHTML = '';
+    let totalPrice = 0;
     cartItem.forEach((item, index) => {
         let newRow = document.createElement('tr');
         newRow.innerHTML = `
@@ -167,51 +168,38 @@ function displayCartItem() {
             <td>${item.destination}</td>
             <td>${item.date}</td>
             <td>${item.time}</td>
-            <td>${item.price}</td>
+            <td>$${item.price}</td>
             <td><button class='increase' onclick="increase(${index})">+</button> 
             <input type="text" id="number" value = ${item.quantity}> 
             <button class='decrease' onclick="decrease(${index})">-</button></td>
             `;
         ticketCart.appendChild(newRow);
-    })
+
+        totalPrice += parseInt(item.price) * item.quantity;
+    });
+    document.getElementById('total-price').value = `$${totalPrice}`; 
 }
 
 function increase(index) {
-    let subTotal = 0;
-    let totalPrice = 0;
     let item = cartItem[index];
     item.quantity++;
-    subTotal += parseInt(item.price) * item.quantity;
-    totalPrice += totalPrice + subTotal;
-    document.getElementById('total-price').value = totalPrice;
 
     displayCartItem();
 }
 
 function decrease(index) {
-    let subTotal = 0;
-    let totalPrice = 0;
     let selectElement = document.getElementById('select');
-    let ticketCart = document.getElementById("tableBody");
     let item = cartItem[index];
     if (item.quantity >= 0) {
         item.quantity--;
-        if (item.quantity <= 0) {
+        if (item.quantity === 0) {
             cartItem.splice(index, 1);
-            if(ticketCart.innerHTML = '') {
-                selectElement.selectedIndex = 0;
-                document.querySelector('#total-price').value = '';
-            }
-        } else {
-            subTotal += parseInt(item.price) * item.quantity;
-            totalPrice += subTotal;
-            document.getElementById('total-price').value = totalPrice;
-        }
-        if(ticketCart.innerHTML = '') {
+        } 
+        if(cartItem.length === 0) {
             selectElement.selectedIndex = 0;
             document.querySelector('#total-price').value = '';
         }
         displayCartItem();
     }
 }
-document.querySelector('#total-price').value = '';
+// document.querySelector('#total-price').value = '';
