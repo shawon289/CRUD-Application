@@ -13,14 +13,20 @@ function openForm() {
 function closeForm() {
     document.getElementById("form").style.display = "none";
 }
+
+// Submit the informations retrieved from the form to array
 function Submit() {
     let dataEntered = retrieveData();
-    itemArray = readLocalStorage(dataEntered);
+    itemArray = setLocalStorage(dataEntered);
     let index = itemArray.length - 1;
+    
+    // Check if the data should be update or inserte a new data in the array
+
     isEditMode ? saveData() : insertData(dataEntered, index);
     closeForm()
 }
 
+// Retrieve the data from the form and set those to an object
 function retrieveData() {
     let departFrom = document.getElementById("depart").value;
     let destination = document.getElementById("destination").value;
@@ -31,8 +37,11 @@ function retrieveData() {
     return obj;
 }
 
-function readLocalStorage(dataEntered) {
+// set the data to the localstorage
+function setLocalStorage(dataEntered) {
     if (!isEditMode) {
+
+        // Generate a unique Id for each item added in the array
         let uniqueId = 1;
         if (storedData.length > 0) {
             let maxId = storedData.reduce((max, item) => (item.id > max ? item.id : max), 0);
@@ -108,6 +117,7 @@ function saveData() {
     showData();
 }
 
+// Get the id of each item from the array and set it to cart tables dropdown menu
 function showId() {
     let selectElement = document.getElementById('select');
     let optionElement = document.createElement('option');
@@ -118,23 +128,29 @@ function showId() {
 
     optionElement.textContent = "";
     selectElement.appendChild(optionElement);
+
+    // Iterate through each element to find id and assign those to a new variable
     let rowID = storedData.map(itemId => itemId.id);
+    
+    // Iterate through each element of the newly returned array of ID and assign those in each option element of the dropdown menu
     rowID.forEach(list => {
         let option = document.createElement('option');
         option.textContent = list;
         selectElement.appendChild(option);
     })
-
 }
 
+// Add datas from the existing array to a new array for cart table
 function addToCart() {
     let selectedId = parseInt(document.getElementById('select').value);
 
     let tableRows = document.getElementById("tableBody").getElementsByTagName("tr");
     let valueOfIndex;
 
+    // iterate through existing array, check if the selected id matches with the id from the object's element
     let selectedItem = storedData.find(obj => obj.id === selectedId);
 
+    // set the values of matched object to newly assigned variable
     let itemId = selectedItem.id;
     let itemDepart = selectedItem.departFrom;
     let itemDestination = selectedItem.destination;
@@ -142,6 +158,8 @@ function addToCart() {
     let itemTime = selectedItem.time;
     let itemPrice = selectedItem.price;
 
+    // Iterate through a specific table row to find the value of first index of the row items
+    // If the value matches with selected id from the dropdown and assing to a new variable
     for (let row of tableRows) {
         let rowItems = row.getElementsByTagName("td");
         if (rowItems[0].innerHTML == selectedId) {
@@ -156,6 +174,7 @@ function addToCart() {
     displayCartItem();
 }
 
+// Creates new rows and sets the datas from the array to the newly created row
 function displayCartItem() {
     let ticketCart = document.getElementById("tableBody");
     ticketCart.innerHTML = '';
@@ -169,27 +188,31 @@ function displayCartItem() {
             <td>${item.date}</td>
             <td>${item.time}</td>
             <td>$${item.price}</td>
-            <td><button class='increase' onclick="increase(${index})">+</button> 
+            <td><button class='increase' onclick="increaseItemQuantity(${index})">+</button> 
             <input type="text" id="number" value = ${item.quantity}> 
-            <button class='decrease' onclick="decrease(${index})">-</button></td>
+            <button class='decrease' onclick="decreaseItemQuantity(${index})">-</button></td>
             `;
         ticketCart.appendChild(newRow);
 
+        // Calculate the total price of each items added in the cart and show the grand total price of all the items
         totalPrice += parseInt(item.price) * item.quantity;
     });
     document.getElementById('total-price').value = `$${totalPrice}`; 
 }
 
-function increase(index) {
-    let item = cartItem[index];
-    item.quantity++;
+function increaseItemQuantity(index) {
+    cartItem[index].quantity++;
 
     displayCartItem();
 }
 
-function decrease(index) {
+function decreaseItemQuantity(index) {
     let selectElement = document.getElementById('select');
     let item = cartItem[index];
+
+    // Check the quantity of the item
+    // Check the quantity is 0 or not, if the quantity decreased to 0 the item will be deleted from the array
+    // Check the carts length is 0 or not to clear the total price label and select element if there is no items in the cart
     if (item.quantity >= 0) {
         item.quantity--;
         if (item.quantity === 0) {
