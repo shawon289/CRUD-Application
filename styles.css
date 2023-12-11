@@ -1,168 +1,167 @@
-table tr td{
-    padding-right: 5px;
-    font-weight: bold;
-    border:inset; 
+table tr td {
+  padding-right: 5px;
+  font-weight: bold;
+  border: inset;
 }
 .field-container {
-    display: flex;
-    border-radius: 5px;
+  display: flex;
+  border-radius: 5px;
 }
 
 #show-price {
-    display: flex;
-    justify-content: space-evenly;
+  display: flex;
+  justify-content: space-evenly;
 }
-#show-price input{
-    background-color: white;
-    text-align: center;
+#show-price input {
+  background-color: white;
+  text-align: center;
 }
 
 #total-price {
-    height: 30px;
-    width: auto;
-    margin-top: 17px;
+  height: 30px;
+  width: auto;
+  margin-top: 17px;
 }
 
 #number {
-    width: 50px;
+  width: 50px;
 }
 
-.flight-container{
-    background-color: lightgrey;
-    border: solid;
-    
+.flight-container {
+  background-color: lightgrey;
+  border: solid;
 }
-.flightCart-container{
-    background-color: lightgray;
-    margin-left: 5px;
-    border: solid;
-    margin-right: 10px;
+.flightCart-container {
+  background-color: lightgray;
+  margin-left: 5px;
+  border: solid;
+  margin-right: 10px;
 }
 
 #flightTable {
-    text-align: center;
-    background-color: white;
+  text-align: center;
+  background-color: white;
 }
 
 #ticketCart {
-    text-align: center;
-    background-color: white;
+  text-align: center;
+  background-color: white;
 }
-.flight-field{
-    border: none;
+.flight-field {
+  border: none;
 }
-.cart-field{
-    border: none;
+.cart-field {
+  border: none;
 }
-#edit{
-    background-color: #9ACD32;
-    color: white;
+#edit {
+  background-color: #9acd32;
+  color: white;
 }
-#remove{
-    background-color: #AA0000;
-    color: white;
+#remove {
+  background-color: #aa0000;
+  color: white;
 }
-.increase{
-    background-color: #0066b2;
-    color: white;
+.increase {
+  background-color: #0066b2;
+  color: white;
 }
-.decrease{
-    background-color: #AA0000;
-    color: white;
+.decrease {
+  background-color: #aa0000;
+  color: white;
 }
 body {
-    font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .open-button {
-    background-color: #0066b2;
-    color: white;
-    padding: 16px 20px;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 10px;
-    margin-left: 2px;
-    font-weight: bold;
+  background-color: #0066b2;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+  margin-left: 2px;
+  font-weight: bold;
 }
 
 body.form {
-    right: 0;
+  right: 0;
 }
 
 body.field-container {
-    transform: translate(-250px);
+  transform: translate(-250px);
 }
 
 .form {
-    display: none;
-    position: fixed;
-    height: 0px;
-    top: 0;
-    right: -400px;
-    bottom: 0;
-    border: 3px solid #f1f1f1;
-    transition: .5s;
-    transform: translateX(-400px);
+  display: none;
+  position: fixed;
+  height: 0px;
+  top: 0;
+  right: -400px;
+  bottom: 0;
+  border: 3px solid #f1f1f1;
+  transition: 0.5s;
+  transform: translateX(-400px);
 }
 
 .main-form {
-    max-width: 300px;
-    padding: 10px;
-    background-color: white;
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
 }
 
-.main-form input[type=text],
-.main-form input[type=time] {
-    width: 100%;
-    padding: 5px;
-    margin: 5px 0 22px 0;
-    border: none;
-    background: #f1f1f1;
+.main-form input[type="text"],
+.main-form input[type="time"] {
+  width: 100%;
+  padding: 5px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
 }
 
-.main-form input[type=text]:focus,
-.main-form input[type=time]:focus {
-    background-color: #ddd;
-    outline: none;
+.main-form input[type="text"]:focus,
+.main-form input[type="time"]:focus {
+  background-color: #ddd;
+  outline: none;
 }
 
 .main-form .btn {
-    background-color: #04AA6D;
-    color: white;
-    padding: 16px 20px;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 10px;
-    opacity: 0.8;
+  background-color: #04aa6d;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 10px;
+  opacity: 0.8;
 }
 
 .main-form .cancel {
-    background-color: red;
+  background-color: red;
 }
 
 .main-form .btn:hover,
 .open-button:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 @media only screen and (max-width: 1200px) {
-    .form{
-        height: 100%;
-    }
+  .form {
+    height: 100%;
+  }
 }
 
 @media only screen and (max-width: 992px) {
-    .form{
-        height: 90%;
-    }
+  .form {
+    height: 90%;
+  }
 }
 @media only screen and (max-width: 480px) {
-    .form{
-        height: 60%;
-    }
+  .form {
+    height: 60%;
+  }
 }
