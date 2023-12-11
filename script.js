@@ -8,17 +8,26 @@ storedData = JSON.parse(storedData);
 function openForm() {
   isEditMode = false;
   document.getElementById("form").style.display = "block";
+  document.getElementById("form-heading").innerText = "Create Data";
 }
 
 function closeForm() {
   document.getElementById("form").style.display = "none";
+
+  document.getElementById("flight-id").value = "";
+  document.getElementById("depart").value = "";
+  document.getElementById("destination").value = "";
+  document.getElementById("date").value = "";
+  document.getElementById("time").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("numberText").innerHTML = "";
 }
 
 // Submit the informations retrieved from the form to array
 function Submit() {
   let dataEntered = retrieveData();
 
-  // Check if the price is a valid number
+  // Check if the price is a valid input
   if (isNaN(dataEntered.price)) {
     document.getElementById("numberText").innerHTML = "Invalid Input";
   } else {
@@ -28,6 +37,14 @@ function Submit() {
     // Check if the data should be updated or a new data should be inserted in the array
     isEditMode ? saveData() : insertData(dataEntered, index);
     closeForm();
+
+    // document.getElementById("flight-id").value = "";
+    // document.getElementById("depart").value = "";
+    // document.getElementById("destination").value = "";
+    // document.getElementById("date").value = "";
+    // document.getElementById("time").value = "";
+    // document.getElementById("price").value = "";
+    // document.getElementById("numberText").innerHTML = "";
   }
 }
 
@@ -114,6 +131,7 @@ function removeData(deletedItemIndex) {
 
 function editData(editedItemIndex) {
   isEditMode = true;
+  document.getElementById("form-heading").innerText = "Edit Data";
 
   let displayData = storedData.filter(
     (item) => storedData.indexOf(item) === editedItemIndex
@@ -131,6 +149,7 @@ function editData(editedItemIndex) {
 
 function saveData() {
   let itemID = parseInt(document.getElementById("flight-id").value);
+
   let sourceItem = storedData.find((item) => item.id === itemID);
 
   sourceItem.departFrom = document.getElementById("depart").value;
@@ -139,9 +158,9 @@ function saveData() {
   sourceItem.time = document.getElementById("time").value;
   sourceItem.price = document.getElementById("price").value;
 
-  if (cartItem.length !== 0) {
-    let cartData = cartItem.find((item) => item.id === itemID);
-    Object.assign(cartData, sourceItem);
+  let cartItemIndex = cartItem.findIndex((item) => item.id === itemID);
+  if (cartItemIndex !== -1) {
+    Object.assign(cartItem[cartItemIndex], sourceItem);
   }
 
   localStorage.setItem("data", JSON.stringify(storedData));
@@ -149,6 +168,8 @@ function saveData() {
   if (cartItem.length > 0) {
     displayCartItem();
   }
+
+  closeForm();
 }
 
 // Get the id of each item from the array and set it to cart tables dropdown menu
