@@ -37,14 +37,6 @@ function Submit() {
     // Check if the data should be updated or a new data should be inserted in the array
     isEditMode ? saveData() : insertData(dataEntered, index);
     closeForm();
-
-    // document.getElementById("flight-id").value = "";
-    // document.getElementById("depart").value = "";
-    // document.getElementById("destination").value = "";
-    // document.getElementById("date").value = "";
-    // document.getElementById("time").value = "";
-    // document.getElementById("price").value = "";
-    // document.getElementById("numberText").innerHTML = "";
   }
 }
 
