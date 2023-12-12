@@ -9,27 +9,33 @@ function openForm() {
   isEditMode = false;
   document.getElementById("form").style.display = "block";
   document.getElementById("form-heading").innerText = "Create Data";
+
+  clearFormContent();
 }
 
 function closeForm() {
   document.getElementById("form").style.display = "none";
 
-  document.getElementById("flight-id").value = "";
-  document.getElementById("depart").value = "";
-  document.getElementById("destination").value = "";
-  document.getElementById("date").value = "";
-  document.getElementById("time").value = "";
-  document.getElementById("price").value = "";
-  document.getElementById("numberText").innerHTML = "";
+  clearFormContent()
 }
 
 // Submit the informations retrieved from the form to array
 function Submit() {
   let dataEntered = retrieveData();
+  let currentDate = new Date();
+  let parsedDateFromData = new Date(dataEntered.date);
+
+  if(parsedDateFromData < currentDate) {
+    alert('Selected date is in the past. Please select a valid date.');
+    return;
+  }
 
   // Check if the price is a valid input
   if (isNaN(dataEntered.price)) {
     document.getElementById("numberText").innerHTML = "Invalid Input";
+  } else if (dataEntered.price.toString().length > 5) {
+    document.getElementById("numberText").innerHTML =
+      "Price should not exceed 3 digits";
   } else {
     itemArray = setLocalStorage(dataEntered);
     let index = itemArray.length - 1;
@@ -105,6 +111,12 @@ function insertData(newFlightInfo, index) {
 function removeData(deletedItemIndex) {
   let table = document.getElementById("flightTable");
   let deletedItemId = storedData[deletedItemIndex].id;
+  let editedItemId = parseInt(document.getElementById("flight-id").value);
+
+  if (editedItemId === deletedItemId) {
+    clearFormContent();
+    closeForm();
+  }
 
   storedData.splice(deletedItemIndex, 1);
   localStorage.setItem("data", JSON.stringify(storedData));
@@ -269,7 +281,7 @@ function decreaseItemQuantity(index) {
   // Check the quantity of the item
   // Check the quantity is 0 or not, if the quantity decreased to 0 the item will be deleted from the array
   // Check the carts length is 0 or not to clear the total price label and select element if there is no items in the cart
-  if (item.quantity >= 0) {
+  if (item.quantity > 0) {
     item.quantity--;
     if (item.quantity === 0) {
       cartItem.splice(index, 1);
@@ -284,12 +296,22 @@ function decreaseItemQuantity(index) {
 function updateQuantity(index, value) {
   let selectElement = document.getElementById("select");
   let item = cartItem[index];
-  if (!isNaN(value) && value >= 0) {
+  if (value >= 0) {
     item.quantity = value;
   }
-  if (item.quantity === 0) {
+  if (value == 0 || value <= 0) {
     cartItem.splice(index, 1);
     selectElement.selectedIndex = 0;
   }
   displayCartItem();
+}
+
+function clearFormContent() {
+  document.getElementById("flight-id").value = "";
+  document.getElementById("depart").value = "";
+  document.getElementById("destination").value = "";
+  document.getElementById("date").value = "";
+  document.getElementById("time").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("numberText").innerHTML = "";
 }

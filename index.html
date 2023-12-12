@@ -10,35 +10,7 @@
   <body onload="showData()">
     <div id="container">
       <button class="open-button" onclick="openForm()">Add Data</button>
-      <div class="form" id="form" onsubmit="return false">
-        <h2 id="form-heading"></h2>
-        <form class="main-form">
-          <input
-            type="text"
-            id="flight-id"
-            placeholder="Flight ID"
-            style="display: none"
-          /><br /><br />
-          <input
-            type="text"
-            id="depart"
-            placeholder="Depart From"
-          /><br /><br />
-          <input
-            type="text"
-            id="destination"
-            placeholder="Destination"
-          /><br /><br />
-          <input type="date" id="date" placeholder="Date" /><br /><br />
-          <input type="time" id="time" placeholder="Time" /><br /><br />
-          <input type="text" id="price" placeholder="Price" /><br /><br />
-          <span id="numberText"></span>
-          <button type="submit" class="btn" onclick="Submit()">Submit</button>
-          <button type="button" class="btn cancel" onclick="closeForm ()">
-            Close
-          </button>
-        </form>
-      </div>
+
       <div class="field-container">
         <div class="flight-container">
           <fieldset class="flight-field">
@@ -85,6 +57,52 @@
         </div>
       </div>
     </div>
+
+    <footer>
+      <div class="form" id="form" onsubmit="return false">
+        <h2 id="form-heading"></h2>
+        <form class="main-form">
+          <div class="field" style="display: none">
+            <label>Flight ID:</label>
+            <input
+              type="text"
+              id="flight-id"
+            /><br /><br />
+          </div>
+          <div class="field">
+            <label>Depart From</label>
+            <input
+              type="text"
+              id="depart"
+            /><br /><br />
+          </div>
+          <div class="field">
+            <label>Destination</label>
+            <input
+              type="text"
+              id="destination"
+            /><br /><br />
+          </div>
+          <div class="field">
+            <label>Date</label>
+            <input type="date" id="date"/><br /><br />
+          </div>
+          <div class="field">
+            <label>Time</label>
+            <input type="time" id="time" /><br /><br />
+          </div>
+          <div class="field">
+            <label>Price</label>
+            <input type="text" id="price" /><br /><br />
+            <span id="numberText"></span>
+          </div>
+          <button type="submit" class="btn" onclick="Submit()">Submit</button>
+          <button type="button" class="btn cancel" onclick="closeForm ()">
+            Close
+          </button>
+        </form>
+      </div>
+    </footer>
 
     <script src="script.js"></script>
   </body>
